@@ -1,16 +1,35 @@
 void Locate(ListNode* head,int x){
-	if(head->next == head){
+	if(head->RLink == head){
 		return;
 	}
-	ListNode* cur = head->next;
+	ListNode* cur = head->RLink;
 	while(cur != head){
-		cur->Freq++;
+		
 		if(cur->val == x){
 			Visit(cur);
+			cur->Freq++;
 			break;
 		} 
-		cur = cur->next;
+		cur = cur->RLink;
 	}
+	if(cur->LLink->Freq >= cur->Freq){
+		return;
+	}
+	ListNode* node = cur;
+	while(cur != head && cur->Freq < node->Freq){
+		cur = cur->LLink;
+	}
+	// 从 node 的原有位置 删除
+	ListNode* Npre = node->LLink;
+	ListNode* Nnext = node->RLink;
+	Npre->RLink = Nnext;
+	Nnext->LLink = Npre;
+	
+	// 插入 node 的新位置
+	cur->RLink->LLink = node;
+	node->RLink = cur->RLink;
+	node->LLink = cur;
+	cur->RLink = node;
 	
 }
 
